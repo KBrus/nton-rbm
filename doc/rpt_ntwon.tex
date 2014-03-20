@@ -1,0 +1,59 @@
+\documentclass[a4paper,10pt]{article} % na razie jako article, jak będzie więcej treści zmieni się na report.
+
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[T1]{fontenc}
+
+\usepackage{indentfirst}
+\usepackage{amsmath, amstext} % ,amsfonts,amssymb
+\usepackage{verbatim}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[usenames,dvipsnames,svgnames]{xcolor}
+\usepackage{utopia}
+\usepackage{geometry}
+\geometry{verbose,lmargin=3cm,rmargin=3cm}
+\frenchspacing
+
+% podtytuł
+\usepackage{titling}
+\newcommand{\subtitle}[1]{
+ \posttitle{
+  \par\end{center}
+  \begin{center}\large#1\end{center}
+  \vskip0.5em}
+}
+
+%opening
+\title{Nowe Trendy w Obliczeniach Neuronowych}
+\subtitle{Spike and Slab Restricted Boltzmann Machine w klasyfikacji obiektów ze zbioru CIFAR-10}
+\author{Konrad Brus \\ Jakub A. Gramsz}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Projekt ma na celu implementację Gaussian Restricted Boltzmann Machine oraz Spike and Slab RBM (zaprezentowanych w \cite{courville2013spike}) i wykorzystanie ich do klasyfikacji obiektów przedstawionych na obrazach. Implementacja uczona oraz testowana będzie na zbiorze danych CIFAR-10 (przedstawiony w \cite{cifar}) przy wykorzystaniu algorytmu uczenia Contrastive Divergence.
+\end{abstract}
+
+\section{Wstęp teoretyczny}
+
+\section{Opis problemu}
+
+\section{Opis modelu}
+
+\section{Opis algorytmu uczenia}
+
+\section{Opis eksperymentu (zbioru danych)}
+
+\section{Dostrajanie modelu i wyniki}
+
+\section{Dyskusja i wnioski}
+
+
+\bibliographystyle{abbrv}
+\nocite{*} % na razie póki mało co jest cytowane (powoduje że wszystko z listy artykułów jest tu widoczne
+\bibliography{lit}
+
+\end{document}
