@@ -73,6 +73,9 @@ wartość jest stała i równa jeden.
 warstw}
 \end{figure} 
 
+Wartosci neuronów na warstwie ukrytej traktuje się jako punkty danych, natomiast warstwa ukryta tworzy
+warunkową reprezentację danych. Pozwala to na transoformacje danych do postaci warunkowej i odwrotnie.
+
 \section{Opis problemu}
 
 Rozpatrywany problem można uznać za problem klasyfikacji, a więc zastosowany model można uznać ze typ klasyfikatora. Na jego wejście podawany jest, w postaci mapy bitowej, obraz należący do jednej z klas, na wyjściu zaś pojawia się etykieta klasy. Aby tego dokonać zestawiane są dwie ograniczone maszyny Boltzmanna, z których pierwsza służy do ekstrakcji cech z danych wejściowych, a druga przydziela tak otrzymane cechy do jednej z 10 klas.
