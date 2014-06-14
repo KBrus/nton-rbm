@@ -6,6 +6,8 @@ doc/*.log
 doc/*.pdf
 doc/*.synctex.gz
 doc/*.fdb_latexmk
+
 data/
+lit/
 src/Nton-RBM/obj/
 src/Nton-RBM/bin/
