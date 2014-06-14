@@ -41,13 +41,19 @@ Projekt ma na celu implementację Gaussian Restricted Boltzmann Machine oraz Spi
 
 \section{Wstęp teoretyczny}
 
-\section{Opis zbioru danych}
+\section{Opis problemu}
+
+Rozpatrywany problem można uznać za problem klasyfikacji, a więc zastosowany model można uznać ze typ klasyfikatora. Na jego wejście podawany jest, w postaci mapy bitowej, obraz należący do jednej z klas, na wyjściu zaś pojawia się etykieta klasy. Aby tego dokonać zestawiane są dwie ograniczone maszyny Boltzmanna, z których pierwsza służy do ekstrakcji cech z danych wejściowych, a druga przydziela tak otrzymane cechy do jednej z 10 klas.
+
+\section{Opis modelu}
+
+\section{Opis algorytmu uczenia}
+
+\section{Opis eksperymentu i  zbioru danych}
 Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów o wymiarach 32x32 pikseli, należących do jednej z 10 klas: 
 \begin{itemize}
 	\item airplane, automobile, bird \\
 	\begin{center} \includegraphics{imgs/class_0.png} \includegraphics{imgs/class_1.png} \includegraphics{imgs/class_2.png} \end{center}
-
-	\newpage
 
 	\item cat, deer, dog \\
 	\begin{center} \includegraphics{imgs/class_3.png} \includegraphics{imgs/class_4.png}  \includegraphics{imgs/class_5.png} \end{center}
@@ -62,15 +68,6 @@ Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów 
 Na jedną klasę przypada 6000 obrazów.
 
 Zbiór jest wstęnie podzielony na dwie części - treningową (zawierającą 50000 obrazów, 5000 na klasę) oraz walidacyjną (10000 obrazów, 1000 na klasę).
-
-
-\section{Opis problemu}
-
-\section{Opis modelu}
-
-\section{Opis algorytmu uczenia}
-
-\section{Opis eksperymentu (zbioru danych)}
 
 \section{Dostrajanie modelu i wyniki}
 
