@@ -45,6 +45,30 @@ węzłami o wartościach dyskretnych lub ciągłych. Model BM można interpretow
 neuronową, w której stan każdego neuronu zależy od neuronów do niego połączonych. Początkowo
 zaproponowano maszynę Boltzmanna jako graf pełny z neuronami o wartościach binarnych, taka sieć była
 analogiczna do sieci Hopfielda jeżeli zastosowalibyśmy neurony deterministyczne zamiast stochastycznych.
+Zaletą maszyny Boltzmanna nad siecią Hopfielda jest, to że maszyna Boltzmanna potrafi generować próbki
+na podstawie wyuczonego rozkładu prowdopodobieństwa.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=5cm]{imgs/bm.png}
+ \label{fig:bm}
+\caption{Maszyna Boltzmanna, wszystkie neurony są połączone ze wszystkimi}
+\end{figure} 
+
+Szybko zauważono, że utrzymywanie wszystkich połączeń w maszynie Boltzmanna przynosi negatywne skutki.
+Uczenie takiego modelu było bardzo trudne i długotrwałe, a jakość wyników nie była wystarczająco dobra
+(jak na taki czas generowania modelu). Ograniczono, więc liczbę połączeń w sieci, wierzchołki podzielono
+na dwie grupy warstwę widoczną i warstwę ukrytą. W nowym modelu ograniczonej maszynie Boltzmanna (ang.
+\textit{Restricted Boltzmann Machine}) usunięto wszystkie połączenia pomiędzy neuronami tej samej
+warstwy.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=5cm]{imgs/rbm.png}
+ \label{fig:bm}
+\caption{Ograniczona maszyna Boltzmanna, połączenia występują pomiędzy wyszystkimi neuronami z różnych
+warstw}
+\end{figure} 
 
 \section{Opis zbioru danych}
 Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów o wymiarach 32x32 pikseli, należących do jednej z 10 klas: 
