@@ -60,12 +60,15 @@ Uczenie takiego modelu było bardzo trudne i długotrwałe, a jakość wyników 
 (jak na taki czas generowania modelu). Ograniczono, więc liczbę połączeń w sieci, wierzchołki podzielono
 na dwie grupy warstwę widoczną i warstwę ukrytą. W nowym modelu ograniczonej maszynie Boltzmanna (ang.
 \textit{Restricted Boltzmann Machine}) usunięto wszystkie połączenia pomiędzy neuronami tej samej
-warstwy.
+warstwy. Łącznie wektor wartości neuronów warstwy widocznej oznaczamy $\mathbf{x}=[x_1, x_2,\dots, x_M]$,
+natomiast wektor wartości neuronów warstwy ukrytej oznaczamy przez $\mathbf{h}=[h_1, h_2,\dots, h_N]$.
+Ponad to w modelu wstawia się dla każdej warstwy dodatkowy neuron zapewniający \textbf{bias}, którego
+wartość jest stała i równa jeden.
 
 \begin{figure}
  \centering
  \includegraphics[width=5cm]{imgs/rbm.png}
- \label{fig:bm}
+ \label{fig:rbm}
 \caption{Ograniczona maszyna Boltzmanna, połączenia występują pomiędzy wyszystkimi neuronami z różnych
 warstw}
 \end{figure} 
