@@ -65,7 +65,7 @@ warstwy.
 \begin{figure}
  \centering
  \includegraphics[width=5cm]{imgs/rbm.png}
- \label{fig:bm}
+ \label{fig:rbm}
 \caption{Ograniczona maszyna Boltzmanna, połączenia występują pomiędzy wyszystkimi neuronami z różnych
 warstw}
 \end{figure} 
@@ -76,6 +76,24 @@ Rozpatrywany problem można uznać za problem klasyfikacji, a więc zastosowany 
 
 \section{Opis modelu}
 
+Najbardziej podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM). Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza binarną reprezentację danych wejściowych $x$ i skutkuje binarną reprezentacją ukrytą $h$.
+
+W takiej formie, każda jednostka widoczna $x_i$ oraz ukryta $h_j$ posiadają wejścia bias \textit{$b_i$} oraz \textit{$c_j$}. Jednostka ukryta z widoczną połączone są wagami \textit{$w_ij$}.
+
+Dla modelu RBM definuje się funkcję energii \textbf{E}, określoną:
+
+\begin{align}
+	\mathbf{E_{BB-RBM}(x,h) = -x^Tb - c^Th - x^TWh}
+\end{align}
+
+Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (i, w ogólności, danych pochodzących z dziedziny rzeczywistej), co umotywowało utworzenie wersji RBM, w której warstwa ukryta jest w dalszym ciągu binarna, lecz warstwa widoczna jest ciągła i ma rozkład normalny o średniej $b_i$ i wariancji $\sigma^2_i$. Odmiana taka to GB-RBM (Gaussian-Binary RBM).
+
+Z taką odmianą skojarzona jest następująca funkcja energii:
+
+\begin{align}
+	\mathbf{E_{GB-RBM}(x,h) = \left\| \frac{x - b}{2 \sigma} \right\| ^2 - c^Th - \left( \frac{x}{\sigma^2} \right) ^TWh}
+\end{align}
+
 \section{Opis algorytmu uczenia}
 
 \section{Opis eksperymentu i  zbioru danych}
@@ -85,10 +103,10 @@ Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów 
 	\begin{center} \includegraphics{imgs/class_0.png} \includegraphics{imgs/class_1.png} \includegraphics{imgs/class_2.png} \end{center}
 
 	\item cat, deer, dog \\
-	\begin{center} \includegraphics{imgs/class_3.png} \includegraphics{imgs/class_4.png}  \includegraphics{imgs/class_5.png} \end{center}
+	\begin{center} \includegraphics{imgs/class_3.png} \includegraphics{imgs/class_4.png} \includegraphics{imgs/class_5.png} \end{center}
 
 	\item frog, horse, ship \\
-	\begin{center} \includegraphics{imgs/class_6.png} \includegraphics{imgs/class_7.png}  \includegraphics{imgs/class_8.png}  \end{center}
+	\begin{center} \includegraphics{imgs/class_6.png} \includegraphics{imgs/class_7.png} \includegraphics{imgs/class_8.png} \end{center}
 
 	\item truck \\
 	\begin{center} \includegraphics{imgs/class_9.png} \end{center}
