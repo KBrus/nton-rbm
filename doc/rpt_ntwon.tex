@@ -125,7 +125,15 @@ Z taką odmianą skojarzona jest następująca funkcja energii:
 
 Do czenia modelu Gaussian-Binary RBM stosuje się algorytm oparty na optymalizacji funkcji tzw.
 \textit{contrastive divergence} w skrócie CD. Algorytm potrzebuje zbioru danych ${\bf X}_D$, rozkład
-warunkowy modelu $P(\cdot\mid\cdot)$ 
+warunkowy modelu $P(\cdot\mid\cdot)$, parametry podlegające uczeniu ${\bf \theta}$, liczba kroków
+próbkowania Gibbsa $k$, oraz prędkość uczenia $\eta$. 
+
+\begin{verbatim}
+
+ WHILE Kryterium stopu nie zostało osiągnięte DO
+   
+\end{verbatim}
+
 
 \section{Opis eksperymentu i  zbioru danych}
 Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów o wymiarach 32x32 pikseli, należących do jednej z 10 klas: 
