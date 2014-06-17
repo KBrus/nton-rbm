@@ -115,13 +115,13 @@ Ponieważ obrazy, w szczególności te o niewielkich rozmiarach, wykazują duż�
 
 \section{Opis modelu}
 
-Podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM). Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą $\mathbf{h}$. W takiej formie, każda jednostka widoczna $x_i$ oraz ukryta $h_j$ posiadają wejścia bias $b_i$ oraz
-$c_j$. Jednostka ukryta z widoczną połączone są wagami $w_ij$.
+Podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM). Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą $\mathbf{h}$. W takiej formie, każda jednostka widoczna $v_i$ oraz ukryta $h_j$ posiadają, odpowiednio, wejścia bias $b_i^v$ oraz
+$b_j^h$. Jednostka ukryta z widoczną połączone są wagami $w_ij$.
 
 Dla modelu RBM definuje się funkcję energii \textbf{E}, określoną:
 
 \begin{align}
-	\mathbf{E_{BB-RBM}(x,h) = -x^Tb - c^Th - x^TWh}
+	\mathbf{E_{BB-RBM}(v,h) = - \sum_{i=1}^{V} \sum_{j=1}^{H} v_i h_j w_ij - \sum_{i=1}^{V} v_i b_i^v - \sum_{j=1}^{H} h_j b_j^h}
 \end{align}
 
 Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (i, w ogólności, danych pochodzących z dziedziny rzeczywistej), co umotywowało utworzenie wersji RBM, w której warstwa ukryta jest w dalszym ciągu binarna, lecz warstwa widoczna jest ciągła, o rozkładzie normalnym, średniej $b_i$ i wariancji $\sigma^2_i$. Odmiana taka to GB-RBM (Gaussian-Binary RBM).
@@ -129,28 +129,49 @@ Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (
 Z taką odmianą skojarzona jest następująca funkcja energii:
 
 \begin{align}
-	\mathbf{E_{GB-RBM}(x,h) = \left\| \frac{x - b}{2 \sigma} \right\| ^2 - c^Th - \left( \frac{x}{\sigma^2} \right) ^TWh}
+	\mathbf{E(v,h) = \sum_{i=1}^{V} \frac{(v_i - b_i^v)^2}{2\sigma_i^2} - \sum_{j=1}^{H} b_j^h h_j - \sum_{i=1}^{V} \sum_{j=1}^{H} \frac{v_i}{\sigma_i} h_j w_ij}
 \end{align}
 
 \section{Opis algorytmu uczenia}
 
-Do czenia modelu Gaussian-Binary RBM stosuje się algorytm oparty na optymalizacji funkcji tzw.
-\textit{contrastive divergence} w skrócie CD. Algorytm potrzebuje zbioru danych ${\bf X}_D$, rozkład
-warunkowy modelu $P(\cdot\mid\cdot)$, parametry podlegające uczeniu ${\bf \theta}$, liczba kroków
-próbkowania Gibbsa $k$, oraz prędkość uczenia $\eta$. 
+Prawdopodobieństwo wystąpienia pewnej konfiguracji $(v, h)$ opisywane jest 
 
-\begin{verbatim}
+\begin{align}
+	\mathbf{p(v,h) = \frac{e^{-E(v,h)}}{\sum_x \sum_k e^{-E(x,k)}}}
+\end{align}
 
- WHILE Kryterium stopu nie zostało osiągnięte DO
-   
-\end{verbatim}
+\textbf{u} oraz \textbf{k} oznaczają tutaj przestrzeń wszystkich możliwych konfiguracji jednostek ukrytych i widocznych, zatem suma występująca w mianowniku jest trudna do obliczenia.
 
+Ze wzoru wynika również, że konfiguracje o wysokiej energii mają niższe prawdopodobieństwo wystąpienia niż konfiguracje o niskiej energii.
 
-\section{Opis eksperymentu i  zbioru danych}
+W ogólności, procedura uczenia ograniczonej maszyny Boltzmanna polega na ustaleniu stanów jednostek ukrytych w pewnej ich konfiguracji i odnalezieniu takich wartości parametrów wag i parametrów \textit{bias}, by prawdopodobieństwo wystąpienia danej konfiguracji \textbf{v} było duże. Wykorzystuje się do tego celu metodę gradientu prostego.
+
+\begin{align}
+ \mathbf{\sum^{C} log p(v^c) = \sum^{C} log \frac{\sum_g e^{-E(v^c, g)}}{\sum_u \sum_g e^{-E(u,g)}}}
+\end{align}
+
+Różniczkując, otrzymujemy:
+
+\begin{align}
+ \mathbf{\frac{\partial}{\partial w_ij} \sum^{C} log p(v^c) = \frac{\partial}{\partial w_ij} \left(  \sum^C log \sum_g e^{-E(v^c, g)} - log \sum_u \sum_g e^{-E(u,g)} \right)}
+\end{align}
+
+Ponieważ wartość tego wyrażenia można obliczyć jedynie przez nieskończone powtarzanie procesu samplowania na przemian warstw widocznej i ukrytej, do przybliżenia jej stosuje się algorytm oparty na optymalizacji funkcji tzw. \textit{contrastive divergence}, która taki ciąg przeprowadza tylko kilka razy.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=10cm]{imgs/cd-n.png}
+ \label{fig:contrastivedivergence}
+ \caption{Przebieg procedury CD \cite{cifar}}
+\end{figure}
+
+\section{Opis eksperymentu i zbioru danych}
 Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów o wymiarach 32x32 pikseli, należących do jednej z 10 klas: 
 \begin{itemize}
 	\item airplane, automobile, bird \\
 	\begin{center} \includegraphics{imgs/class_0.png} \includegraphics{imgs/class_1.png} \includegraphics{imgs/class_2.png} \end{center}
+
+	\newpage
 
 	\item cat, deer, dog \\
 	\begin{center} \includegraphics{imgs/class_3.png} \includegraphics{imgs/class_4.png} \includegraphics{imgs/class_5.png} \end{center}
@@ -164,12 +185,17 @@ Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów 
 
 Na jedną klasę przypada 6000 obrazów.
 
-Zbiór jest wstęnie podzielony na dwie części - treningową (zawierającą 50000 obrazów, 5000 na klasę) oraz walidacyjną (10000 obrazów, 1000 na klasę).
+Zbiór jest wstęnie podzielony na dwie części - treningową (zawierającą 50000 obrazów, 5000 na klasę) oraz testową (10000 obrazów, 1000 na klasę).
 
-\section{Dostrajanie modelu i wyniki}
 
-\section{Dyskusja i wnioski}
 
+Eksperyment zaplanowany jest następująco:
+
+\begin{itemize}
+	\item utworzenie 25 modeli GB-RBM o \textit{n}, trenowanych niezależnie na każdym z segmentów powstałych po wstępnym przetworzeniu danych (n jest tutaj parametrem, który może podlegać pewnemu dostrojeniu),
+	\item utworzenie nadrzędnego modelu RBM o $\textit{n} \times 25$ jednostkach ukrytych, inicjowanych wagami kolejnych modeli niższego poziomu,
+	\item sprawdzenie, czy zmiana rozmiaru segmentów ma wpływ na skuteczność rozpoznawania obiektów.
+\end{itemize}
 
 \bibliographystyle{abbrv}
 \nocite{*} % na razie póki mało co jest cytowane (powoduje że wszystko z listy artykułów jest tu widoczne
