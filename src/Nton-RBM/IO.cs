@@ -154,14 +154,14 @@ namespace Nton_RBM
             }
         }
 
-        public static void SaveCovM(double[,] covm, string path)
+        public static void SaveMtx(double[,] mtx, string path, bool isCentered)
         {
-            Bitmap bm = new Bitmap(covm.GetLength(0), covm.GetLength(1));
+            Bitmap bm = new Bitmap(mtx.GetLength(0), mtx.GetLength(1));
 
-            for (int i = 0; i < covm.GetLength(0); ++i)
-                for (int j = 0; j < covm.GetLength(1); ++j)
+            for (int i = 0; i < mtx.GetLength(0); ++i)
+                for (int j = 0; j < mtx.GetLength(1); ++j)
                 {
-                    int val = DoubleNormTo8bppGray(covm[j,i]);
+                    int val = isCentered ? DoubleNormTo8bppGray(mtx[j,i]) : (int) mtx[j,i];
                     bm.SetPixel(j, i, Color.FromArgb(val, val, val));
                 }
 

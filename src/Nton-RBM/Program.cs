@@ -32,8 +32,8 @@ namespace Nton_RBM
             var data_bw = Preprocessing.ToBW(data2, 0);
             IO.SavePicture(data_bw[0], @"C:\Users\Konrad\Desktop\0_bw.png", false);
 
-            //var data_bw_center = Preprocessing.ZeroMean(data_bw);
-            //IO.SavePicture(data_bw_center[0], @"C:\Users\Konrad\Desktop\0_bw_c.png", true);
+            var data_bw_center = Preprocessing.ZeroMean(data_bw);
+            IO.SavePicture(data_bw_center[0], @"C:\Users\Konrad\Desktop\0_bw_c.png", true);
 
             //var patch = CIFARImageBW.GetPatch(data_bw_center[0], 16, 16);
             //IO.SavePicture(patch, @"C:\Users\Konrad\Desktop\patch.png", true);
@@ -43,11 +43,18 @@ namespace Nton_RBM
             //IO.SavePatches(patches_seq, @"C:\Users\Konrad\Desktop\patches_seq\", true);
 
             var patches_25 = CIFARImageBW.GetPatches_25(data_bw[0]);
-            Preprocessing.ZeroMean(patches_25);
-            IO.SavePatches(patches_25, @"C:\Users\Konrad\Desktop\patches_25", true);
+            IO.SavePatches(patches_25, @"C:\Users\Konrad\Desktop\patches_25", false);
+            patches_25 = Preprocessing.ZeroMean(patches_25);
+            IO.SavePatches(patches_25, @"C:\Users\Konrad\Desktop\patches_25_centered", true);
 
-            var covm = CIFARImageBW.Cov_Mtx(data_bw[0]);
-            IO.SaveCovM(covm, @"C:\Users\Konrad\Desktop\covm.png");
+            //var covm = CIFARImageBW.Cov_Mtx(CIFARImageBW.ToDoubleMtx(data_bw[0]));
+            //IO.SaveMtx(covm, @"C:\Users\Konrad\Desktop\covm.png", true);
+
+            //var whitened = CIFARImageBW.Normalize_Whiten(data_bw[0]);
+            //IO.SaveMtx(whitened, @"C:\Users\Konrad\Desktop\whiten.png", true);
+
+            //var image_mtx = CIFARImageBW.ToDoubleMtx(data_bw[0]);
+            //IO.SaveMtx(image_mtx, @"C:\Users\Konrad\Desktop\mtx.png", true);
         }
     }
 }

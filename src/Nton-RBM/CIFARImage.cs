@@ -128,22 +128,27 @@ namespace Nton_RBM
             return result;
         }
 
-        public static double[,] Cov_Mtx(CIFARImageBW img)
+        public static double[,] Cov_Mtx(double[,] img_mtx)
         {
-            var img_mtx = ToDoubleMtx(img);
-
             double [,] cov_mtx = new double[img_mtx.GetLength(0), img_mtx.GetLength(1)];
             alglib.covm(img_mtx, out cov_mtx);
             
             // normalize
+            cov_mtx = NormalizeMtx(cov_mtx);
+
+            return cov_mtx;
+        }
+
+        public static double[,] NormalizeMtx(double[,] cov_mtx)
+        {
             double min = double.MaxValue;
             double max = double.MinValue;
             for (int i = 0; i < cov_mtx.GetLength(0); ++i)
             {
                 for (int j = 0; j < cov_mtx.GetLength(1); ++j)
                 {
-                    min = Math.Min(cov_mtx[j,i], min);
-                    max = Math.Max(cov_mtx[j,i], max);
+                    min = Math.Min(cov_mtx[j, i], min);
+                    max = Math.Max(cov_mtx[j, i], max);
                 }
             }
             double range = max - min;
@@ -152,11 +157,11 @@ namespace Nton_RBM
             {
                 for (int j = 0; j < cov_mtx.GetLength(1); ++j)
                 {
-                    cov_mtx[j,i] /= max;
+                    cov_mtx[j, i] /= max;
                 }
             }
 
-             return cov_mtx;
+            return cov_mtx;
         }
 
         public static double[,] ToDoubleMtx(CIFARImageBW image)
@@ -167,11 +172,43 @@ namespace Nton_RBM
 
             for (int i = 0; i < sqrtDim; ++i)
                 for (int j = 0; j < sqrtDim; ++j)
-                    result[j, i] = image.PixelData[j * sqrtDim + i];
+                    result[i, j] = image.PixelData[j * sqrtDim + i];
 
             return result;
         }
 
+        public static double[,] Normalize_Whiten(CIFARImageBW image)
+        {
+            image = Normalize_ZeroMean(image);
+
+            var img_mtx = ToDoubleMtx(image);
+            var cov_mtx = Cov_Mtx(img_mtx);
+
+            double[] w = new double[cov_mtx.GetLength(1)];
+            double[,] u = new double[cov_mtx.GetLength(0), cov_mtx.GetLength(1)];
+            double[,] vt = new double[cov_mtx.GetLength(0), cov_mtx.GetLength(1)];
+
+            alglib.svd.rmatrixsvd(cov_mtx, cov_mtx.GetLength(0), cov_mtx.GetLength(1), 2, 2, 2, ref w, ref u, ref vt);
+
+            double[,] _1_sqrt_w_mtx = new double[w.Length, w.Length];
+            for (int i = 0; i < w.Length; ++i)
+            {
+                _1_sqrt_w_mtx[i, i] = 1 / Math.Sqrt(w[i] + 0.00000001);
+            }
+
+            double[,] ut = new double[w.Length, w.Length];
+            alglib.rmatrixtranspose(w.Length, w.Length, u, 0, 0, ref ut, 0, 0);
+
+            double[,] result1 = new double[w.Length, w.Length];
+            double[,] result2 = new double[w.Length, w.Length];
+            double[,] result3 = new double[w.Length, w.Length];
+
+            alglib.rmatrixgemm(w.Length, w.Length, w.Length, 1, u, 0, 0, 0, _1_sqrt_w_mtx, 0, 0, 0, 0, ref result1, 0, 0);
+            alglib.rmatrixgemm(w.Length, w.Length, w.Length, 1, result1, 0, 0, 0, ut, 0, 0, 0, 0, ref result2, 0, 0);
+            alglib.rmatrixgemm(w.Length, w.Length, w.Length, 1, result2, 0, 0, 0, img_mtx, 0, 0, 0, 0, ref result3, 0, 0);
+
+            return NormalizeMtx(result3);
+        }
 
     }
 
