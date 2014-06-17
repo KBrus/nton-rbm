@@ -115,18 +115,8 @@ Ponieważ obrazy, w szczególności te o niewielkich rozmiarach, wykazują duż�
 
 \section{Opis modelu}
 
-<<<<<<< HEAD
-Podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM). Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą $\mathbf{h}$.
-=======
-Najbardziej podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM).
-Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza
-binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą
-$\mathbf{h}$.
->>>>>>> origin/master
-
-W takiej formie, każda jednostka widoczna $x_i$ oraz ukryta $h_j$ posiadają wejścia bias $b_i$ oraz
-$c_j$.
-Jednostka ukryta z widoczną połączone są wagami $w_ij$.
+Podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM). Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą $\mathbf{h}$. W takiej formie, każda jednostka widoczna $x_i$ oraz ukryta $h_j$ posiadają wejścia bias $b_i$ oraz
+$c_j$. Jednostka ukryta z widoczną połączone są wagami $w_ij$.
 
 Dla modelu RBM definuje się funkcję energii \textbf{E}, określoną:
 
@@ -134,14 +124,7 @@ Dla modelu RBM definuje się funkcję energii \textbf{E}, określoną:
 	\mathbf{E_{BB-RBM}(x,h) = -x^Tb - c^Th - x^TWh}
 \end{align}
 
-<<<<<<< HEAD
 Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (i, w ogólności, danych pochodzących z dziedziny rzeczywistej), co umotywowało utworzenie wersji RBM, w której warstwa ukryta jest w dalszym ciągu binarna, lecz warstwa widoczna jest ciągła, o rozkładzie normalnym, średniej $b_i$ i wariancji $\sigma^2_i$. Odmiana taka to GB-RBM (Gaussian-Binary RBM).
-=======
-Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (i, w ogólności, danych
-pochodzących z dziedziny rzeczywistej), co umotywowało utworzenie wersji RBM, w której warstwa ukryta
-jest w dalszym ciągu binarna, lecz warstwa widoczna jest ciągła i ma rozkład normalny o średniej $b_i$ i
-wariancji $\sigma^2_i$. Odmiana taka to GB-RBM (Gaussian-Binary RBM).
->>>>>>> origin/master
 
 Z taką odmianą skojarzona jest następująca funkcja energii:
 
