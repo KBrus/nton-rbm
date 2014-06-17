@@ -9,10 +9,13 @@ using System.Drawing;
 
 namespace Nton_RBM
 {
-    class Reader
+    class IO
     {
         private static readonly string DataFolder = ConfigurationManager.AppSettings["DataFolder"];
 
+        /// <summary>
+        /// Zbior uczacy, zbior testowy
+        /// </summary>
         public static Tuple<List<CIFARImage>, List<CIFARImage>> Read()
         {
             if (!Directory.Exists(DataFolder))
@@ -59,9 +62,9 @@ namespace Nton_RBM
             Console.WriteLine("Read test data,     [{0}]", string.Join(",", classCountTest));
 
 
-            Console.WriteLine("Processing");
-            TransformBArrToImage(DataTrain);
-            TransformBArrToImage(DataTest);
+            //Console.WriteLine("Processing");
+            //TransformBArrToImage(DataTrain);
+            //TransformBArrToImage(DataTest);
 
             return new Tuple<List<CIFARImage>, List<CIFARImage>>(DataTrain, DataTest);
         }
@@ -81,12 +84,49 @@ namespace Nton_RBM
             });
         }
 
-        public static void SavePicture(CIFARImage image, string path)
+        public static void SavePicture2(CIFARImage image, string path)
         {
             if (image.Image == null)
                 throw new Exception("Image not transformed");
 
             image.Image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        public static void SavePicture(CIFARImage image, string path)
+        {
+            Bitmap bm = new Bitmap(32, 32);
+            var data = image.PixelData;
+
+            for (int x = 0; x < image.Height; ++x)
+            {
+                for (int y = 0; y < image.Width; ++y)
+                {
+                    bm.SetPixel(y, x, Color.FromArgb(data[x * 32 + y], data[x * 32 + y + 1024], data[x * 32 + y + 2048]));
+                }
+            }
+
+            bm.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        public static void SavePicture(CIFARImageBW image, string path, bool isCentered)
+        {
+            Bitmap bm = new Bitmap(image.Width, image.Height);
+            for (int i = 0; i < image.Height; ++i)
+            {
+                for (int j = 0; j < image.Width; ++j)
+                {
+                    int val = isCentered ? DoubleTo8bppGray(image.PixelData[i*image.Width+j]) : (byte) image.PixelData[i*image.Width+j];
+                    bm.SetPixel(j, i, Color.FromArgb(val, val, val));
+                }
+            }
+
+            bm.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        private static int DoubleTo8bppGray(double value)
+        {
+            double shifted = value + 127;
+            return (int) Math.Min(Math.Max(shifted, 0), 255);
         }
 
         public static void SaveSet(List<CIFARImage> set, string path)
@@ -96,6 +136,16 @@ namespace Nton_RBM
 
             for (int i = 0; i < set.Count; ++i)
                 SavePicture(set[i], path + @"\" + set[i].Label + @"\" + i + ".png");
+        }
+
+        public static void SavePatches(List<CIFARImageBW> set, string path, bool isCentered)
+        {
+            Directory.CreateDirectory(path);
+
+            for (int i = 0; i < set.Count; ++i)
+            {
+                SavePicture(set[i], path + @"\" + i + ".png", isCentered);
+            }
         }
     }
 }
