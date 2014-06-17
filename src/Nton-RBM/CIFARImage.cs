@@ -41,7 +41,7 @@ namespace Nton_RBM
 
         public static CIFARImageBW FromCIFARImage(CIFARImage orig)
         {
-            CIFARImageBW result = new CIFARImageBW(orig.Label);
+            CIFARImageBW result = new CIFARImageBW(orig.Label, orig.Width, orig.Height);
             for (int i = 0; i < result.PixelData.Length; ++i)
             {
                 result.PixelData[i] = (orig.PixelData[i] + orig.PixelData[i + 1024] + orig.PixelData[i + 2048]) / 3.0;
@@ -50,9 +50,22 @@ namespace Nton_RBM
             return result;
         }
 
+        public static CIFARImageBW FromCIFARImage(CIFARImage orig, int channel)
+        {
+            if (channel < 0 || channel > 2)
+                throw new Exception("Channel != 1, 2, or 3");
+
+            CIFARImageBW result = new CIFARImageBW(orig.Label, orig.Width, orig.Height );
+            for (int i = 0; i < result.PixelData.Length; ++i)
+            {
+                result.PixelData[i] = (orig.PixelData[i + 1024 * channel]);
+            }
+            return result;
+        }
+
         public static CIFARImageBW Normalize_ZeroMean(CIFARImageBW orig)
         {
-            CIFARImageBW result = new CIFARImageBW(orig.Label);
+            CIFARImageBW result = new CIFARImageBW(orig.Label, orig.Width, orig.Height);
 
             double mean = Mean(orig);
 
@@ -94,16 +107,72 @@ namespace Nton_RBM
             {
                 for (int j = 0; j < 24; j += 1)
                 {
-                    Console.WriteLine("{0}:{1}", i, j);
+                    //Console.WriteLine("{0}:{1}", i, j);
                     result.Add(GetPatch(img, j, i));
                 }
             }
             return result;
         }
 
-        public static void PCA_Whitening(CIFARImageBW img)
+        public static List<CIFARImageBW> GetPatches_25(CIFARImageBW img)
         {
+            List<CIFARImageBW> result = new List<CIFARImageBW>();
+            for (int i = 0; i < 4; ++i)
+                for (int j = 0; j < 4; ++j)
+                    result.Add(GetPatch(img, j * 8, i * 8));
+
+            for (int i = 0; i < 3; ++i)
+                for (int j = 0; j < 3; ++j)
+                    result.Add(GetPatch(img, j * 8 + 4, i * 8 + 4));    
+
+            return result;
         }
+
+        public static double[,] Cov_Mtx(CIFARImageBW img)
+        {
+            var img_mtx = ToDoubleMtx(img);
+
+            double [,] cov_mtx = new double[img_mtx.GetLength(0), img_mtx.GetLength(1)];
+            alglib.covm(img_mtx, out cov_mtx);
+            
+            // normalize
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            for (int i = 0; i < cov_mtx.GetLength(0); ++i)
+            {
+                for (int j = 0; j < cov_mtx.GetLength(1); ++j)
+                {
+                    min = Math.Min(cov_mtx[j,i], min);
+                    max = Math.Max(cov_mtx[j,i], max);
+                }
+            }
+            double range = max - min;
+
+            for (int i = 0; i < cov_mtx.GetLength(0); ++i)
+            {
+                for (int j = 0; j < cov_mtx.GetLength(1); ++j)
+                {
+                    cov_mtx[j,i] /= max;
+                }
+            }
+
+             return cov_mtx;
+        }
+
+        public static double[,] ToDoubleMtx(CIFARImageBW image)
+        {
+            int sqrtDim = (int) Math.Sqrt(image.PixelData.Length);
+
+            double[,] result = new double[sqrtDim, sqrtDim];
+
+            for (int i = 0; i < sqrtDim; ++i)
+                for (int j = 0; j < sqrtDim; ++j)
+                    result[j, i] = image.PixelData[j * sqrtDim + i];
+
+            return result;
+        }
+
+
     }
 
     class Preprocessing
@@ -115,6 +184,18 @@ namespace Nton_RBM
             foreach (var image in origs)
             {
                 result.Add(CIFARImageBW.FromCIFARImage(image));
+            }
+            Console.WriteLine("\tDone");
+            return result;
+        }
+
+        public static List<CIFARImageBW> ToBW(List<CIFARImage> origs, int channel)
+        {
+            Console.WriteLine("Preprocess: To BW ({0} images)", origs.Count);
+            List<CIFARImageBW> result = new List<CIFARImageBW>();
+            foreach (var image in origs)
+            {
+                result.Add(CIFARImageBW.FromCIFARImage(image, channel));
             }
             Console.WriteLine("\tDone");
             return result;

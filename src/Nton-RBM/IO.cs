@@ -129,6 +129,12 @@ namespace Nton_RBM
             return (int) Math.Min(Math.Max(shifted, 0), 255);
         }
 
+        private static int DoubleNormTo8bppGray(double value)
+        {
+            double shifted = value * 127 + 127;
+            return (int)Math.Min(Math.Max(shifted, 0), 255);
+        }
+
         public static void SaveSet(List<CIFARImage> set, string path)
         {
             for (int i = 0; i < 10; ++i)
@@ -146,6 +152,20 @@ namespace Nton_RBM
             {
                 SavePicture(set[i], path + @"\" + i + ".png", isCentered);
             }
+        }
+
+        public static void SaveCovM(double[,] covm, string path)
+        {
+            Bitmap bm = new Bitmap(covm.GetLength(0), covm.GetLength(1));
+
+            for (int i = 0; i < covm.GetLength(0); ++i)
+                for (int j = 0; j < covm.GetLength(1); ++j)
+                {
+                    int val = DoubleNormTo8bppGray(covm[j,i]);
+                    bm.SetPixel(j, i, Color.FromArgb(val, val, val));
+                }
+
+            bm.Save(path, System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }
