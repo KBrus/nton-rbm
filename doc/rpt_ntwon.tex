@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt]{article} % na razie jako article, jak będzie więcej treści zmieni się na report.
+\documentclass[a4paper,10pt]{report} 
 
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
@@ -36,8 +36,13 @@
 \maketitle
 
 \begin{abstract}
-Projekt ma na celu implementację Gaussian Restricted Boltzmann Machine oraz Spike and Slab RBM (zaprezentowanych w \cite{courville2013spike}) i wykorzystanie ich do klasyfikacji obiektów przedstawionych na obrazach. Implementacja uczona oraz testowana będzie na zbiorze danych CIFAR-10 (przedstawiony w \cite{cifar}) przy wykorzystaniu algorytmu uczenia Contrastive Divergence.
+Projekt ma na celu implementację Gaussian Restricted Boltzmann Machine oraz Spike and Slab RBM 
+(zaprezentowanych w \cite{courville2013spike}) i wykorzystanie ich do klasyfikacji obiektów
+przedstawionych na obrazach. Implementacja uczona oraz testowana będzie na zbiorze danych CIFAR-10
+(przedstawiony w \cite{cifar}) przy wykorzystaniu algorytmu uczenia Contrastive Divergence.
 \end{abstract}
+
+\chapter*{}
 
 \section{Wstęp teoretyczny}
 Maszyna Boltzmanna (ang. \textit{Boltzmann Machine}, BM) jest nieskierowanym grafem probabilistycznym z
@@ -82,13 +87,22 @@ Potrafią one uczyć się bardzo złożonych wzorców.
 
 \section{Opis problemu}
 
-Rozpatrywany problem można uznać za problem klasyfikacji, a więc zastosowany model można uznać ze typ klasyfikatora. Na jego wejście podawany jest, w postaci mapy bitowej, obraz należący do jednej z klas, na wyjściu zaś pojawia się etykieta klasy. Aby tego dokonać zestawiane są dwie ograniczone maszyny Boltzmanna, z których pierwsza służy do ekstrakcji cech z danych wejściowych, a druga przydziela tak otrzymane cechy do jednej z 10 klas.
+Rozpatrywany problem można uznać za problem klasyfikacji, a więc zastosowany model można uznać ze typ
+klasyfikatora. Na jego wejście podawany jest, w postaci mapy bitowej, obraz należący do jednej z klas, na
+wyjściu zaś pojawia się etykieta klasy. Aby tego dokonać zestawiane są dwie ograniczone maszyny
+Boltzmanna, z których pierwsza służy do ekstrakcji cech z danych wejściowych, a druga przydziela tak
+otrzymane cechy do jednej z 10 klas.
 
 \section{Opis modelu}
 
-Najbardziej podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM). Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą $\mathbf{h}$.
+Najbardziej podstawową wersją ograniczonej maszyny Boltzmanna jest odmiana BB-RBM (Binary-Binary RBM).
+Składa się ona z warstwy binarnych jednostek widocznych oraz binarnych jednostek ukrytych, co wymusza
+binarną reprezentację danych wejściowych $\mathbf{x}$ i skutkuje binarną reprezentacją ukrytą
+$\mathbf{h}$.
 
-W takiej formie, każda jednostka widoczna $x_i$ oraz ukryta $h_j$ posiadają wejścia bias $b_i$ oraz $c_j$. Jednostka ukryta z widoczną połączone są wagami $w_ij$.
+W takiej formie, każda jednostka widoczna $x_i$ oraz ukryta $h_j$ posiadają wejścia bias $b_i$ oraz
+$c_j$.
+Jednostka ukryta z widoczną połączone są wagami $w_ij$.
 
 Dla modelu RBM definuje się funkcję energii \textbf{E}, określoną:
 
@@ -96,7 +110,10 @@ Dla modelu RBM definuje się funkcję energii \textbf{E}, określoną:
 	\mathbf{E_{BB-RBM}(x,h) = -x^Tb - c^Th - x^TWh}
 \end{align}
 
-Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (i, w ogólności, danych pochodzących z dziedziny rzeczywistej), co umotywowało utworzenie wersji RBM, w której warstwa ukryta jest w dalszym ciągu binarna, lecz warstwa widoczna jest ciągła i ma rozkład normalny o średniej $b_i$ i wariancji $\sigma^2_i$. Odmiana taka to GB-RBM (Gaussian-Binary RBM).
+Nie jest to najbardziej intuicyjne podejście w przypadku modelowania obrazów (i, w ogólności, danych
+pochodzących z dziedziny rzeczywistej), co umotywowało utworzenie wersji RBM, w której warstwa ukryta
+jest w dalszym ciągu binarna, lecz warstwa widoczna jest ciągła i ma rozkład normalny o średniej $b_i$ i
+wariancji $\sigma^2_i$. Odmiana taka to GB-RBM (Gaussian-Binary RBM).
 
 Z taką odmianą skojarzona jest następująca funkcja energii:
 
@@ -105,6 +122,10 @@ Z taką odmianą skojarzona jest następująca funkcja energii:
 \end{align}
 
 \section{Opis algorytmu uczenia}
+
+Do czenia modelu Gaussian-Binary RBM stosuje się algorytm oparty na optymalizacji funkcji tzw.
+\textit{contrastive divergence} w skrócie CD. Algorytm potrzebuje zbioru danych ${\bf X}_D$, rozkład
+warunkowy modelu $P(\cdot\mid\cdot)$ 
 
 \section{Opis eksperymentu i  zbioru danych}
 Do badań zostanie użyty zbiór CIFAR-10. Zawiera on 60000 kolorowych obrazów o wymiarach 32x32 pikseli, należących do jednej z 10 klas: 
